@@ -1,0 +1,8 @@
+{
+  "name": "@taichunmin/node-jose-browserify",
+  "version": "2.2.0",
+  "main": "node-jose.min.js",
+  "repository": "git@github.com:taichunmin/node-jose-browserify.git",
+  "author": "taichunmin <taichunmin@gmail.com>",
+  "license": "MIT"
+}

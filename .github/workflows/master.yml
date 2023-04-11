@@ -1,0 +1,56 @@
+name: master
+
+on:
+  workflow_dispatch:
+    inputs:
+      jose-version:
+        description: 要部署的 node-jose 版本
+        required: true
+        type: string
+      dry-run:
+        default: true
+        description: Run "npm publish" in "dry run" mode
+        required: true
+        type: boolean
+
+permissions:
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Publish v${{ inputs.jose-version }} to npm
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
+    env:
+      JOSE_VERSION: ${{ inputs.jose-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+      - name: install and build
+        run: |
+          yarn
+          yarn add node-jose@${{ inputs.jose-version }}
+          yarn build
+          cp README.md .npmignore src/index.html dist/
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deploy-pages
+        uses: actions/deploy-pages@v1
+      - name: Publish to npm
+        if: github.ref == 'refs/heads/master'
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          access: public
+          dry-run: ${{ inputs.dry-run }}
+          package: ./dist/package.json
+          token: ${{ secrets.NPM_TOKEN }}

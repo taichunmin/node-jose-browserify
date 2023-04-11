@@ -1,0 +1,18 @@
+{
+  "name": "@taichunmin/node-jose-browserify",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:taichunmin/node-jose-browserify.git",
+  "author": "taichunmin <taichunmin@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "browserify": "^17.0.0",
+    "dotenv": "^16.0.3",
+    "lodash": "^4.17.21",
+    "node-jose": "2.2.0",
+    "terser": "^5.16.9"
+  },
+  "scripts": {
+    "build": "node ./generate-package.cjs && browserify src/index.cjs -s jose -o dist/node-jose.js && terser dist/node-jose.js --compress ecma=2022 -o dist/node-jose.min.js"
+  }
+}
